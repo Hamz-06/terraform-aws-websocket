@@ -31,6 +31,40 @@ locals {
     ? "${local.lambda_source_path_base}/${var.default_lambda_source_path}"
     : var.default_lambda_source_path
   )
+
+  dynamodb_crud_permissions = {
+    effect = "Allow",
+    actions = [
+      "dynamodb:GetItem",
+      "dynamodb:DeleteItem",
+      "dynamodb:PutItem",
+      "dynamodb:Scan",
+      "dynamodb:Query",
+      "dynamodb:UpdateItem",
+      "dynamodb:BatchWriteItem",
+      "dynamodb:BatchGetItem",
+      "dynamodb:DescribeTable",
+      "dynamodb:ConditionCheckItem",
+    ],
+    resources = [
+      "${module.dynamodb.dynamodb_table_arn}",
+      "${module.dynamodb.dynamodb_table_arn}/index/*"
+    ]
+  }
+
+  shared_lambda_environment_variables = {
+    WS_STAGE            = var.stage_name,
+    WS_DOMAIN_NAME      = module.websocket.domain_name,
+    DYNAMODB_TABLE_NAME = module.dynamodb.dynamodb_table_name
+  }
+}
+
+// ** dynamo **
+module "dynamodb" {
+  source = "./modules/dynamo"
+  name   = "${var.application_name}-dynamodb-table"
+
+  tags = var.tags
 }
 
 // ** lambda **
@@ -44,9 +78,8 @@ module "producer_lambda" {
   http_api_execution_arn      = module.http_gateway.api_execution_arn
   websocket_api_execution_arn = module.websocket.api_execution_arn
   enable_vpc                  = false
-
-  domain_name = module.websocket.domain_name
-  stage_name  = var.stage_name
+  environment_variables       = local.shared_lambda_environment_variables
+  dynamodb_crud_permissions   = local.dynamodb_crud_permissions
 
   tags = var.tags
 }
@@ -59,6 +92,8 @@ module "websocket_connect_lambda" {
   handler                     = var.connect_lambda_handler
   runtime                     = var.lambda_runtime
   websocket_api_execution_arn = module.websocket.api_execution_arn
+  dynamodb_crud_permissions   = local.dynamodb_crud_permissions
+  environment_variables       = local.shared_lambda_environment_variables
 
   tags = var.tags
 }
@@ -71,6 +106,8 @@ module "websocket_disconnect_lambda" {
   handler                     = var.disconnect_lambda_handler
   runtime                     = var.lambda_runtime
   websocket_api_execution_arn = module.websocket.api_execution_arn
+  dynamodb_crud_permissions   = local.dynamodb_crud_permissions
+  environment_variables       = local.shared_lambda_environment_variables
 
   tags = var.tags
 }
@@ -82,6 +119,8 @@ module "websocket_default_lambda" {
   handler                     = var.default_lambda_handler
   runtime                     = var.lambda_runtime
   websocket_api_execution_arn = module.websocket.api_execution_arn
+  dynamodb_crud_permissions   = local.dynamodb_crud_permissions
+  environment_variables       = local.shared_lambda_environment_variables
 
   tags = var.tags
 }

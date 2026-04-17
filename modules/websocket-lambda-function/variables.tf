@@ -31,3 +31,15 @@ variable "websocket_api_execution_arn" {
   type        = string
   default     = null
 }
+
+variable "dynamodb_crud_permissions" {
+  description = "Optional IAM policy statement for DynamoDB CRUD permissions. If provided, the Lambda will have these permissions in addition to the default @connections management permissions."
+  type        = any
+  default     = null
+}
+
+variable "environment_variables" {
+  description = "Optional map of environment variables to set for the Lambda function."
+  type        = map(string)
+  default     = {}
+}

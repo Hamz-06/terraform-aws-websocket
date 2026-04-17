@@ -55,12 +55,14 @@ variable "security_group_ids" {
   default     = []
 }
 
-variable "stage_name" {
-  description = "WebSocket API stage name, used as an environment variable for the Lambda function."
-  type        = string
+variable "dynamodb_crud_permissions" {
+  description = "Optional IAM policy statement for DynamoDB CRUD permissions. If provided, the Lambda will have these permissions in addition to the default @connections management permissions."
+  type        = any
+  default     = null
 }
 
-variable "domain_name" {
-  description = "WebSocket API domain name, used for constructing the WebSocket URL in the Lambda environment variables."
-  type        = string
+variable "environment_variables" {
+  description = "Optional map of environment variables to set for the Lambda function."
+  type        = map(string)
+  default     = {}
 }

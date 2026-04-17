@@ -1,6 +1,6 @@
 module "api_gateway_websocket" {
-  source = "terraform-aws-modules/apigateway-v2/aws"
-
+  source  = "terraform-aws-modules/apigateway-v2/aws"
+  version = "6.1.0"
 
   name                       = var.name
   description                = "WebSocket API for ${var.name}"
@@ -9,7 +9,6 @@ module "api_gateway_websocket" {
 
   create_stage = true
   stage_name   = var.stage_name
-
 
   stage_default_route_settings = {
     data_trace_enabled       = false
