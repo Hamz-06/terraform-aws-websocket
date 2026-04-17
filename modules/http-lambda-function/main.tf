@@ -18,25 +18,27 @@ module "lambda_function" {
     }
   }
 
-  environment_variables = {
-    WS_STAGE       = var.stage_name
-    WS_DOMAIN_NAME = var.domain_name
-  }
+  environment_variables = var.environment_variables
 
   # Optional VPC configuration
   vpc_subnet_ids         = var.enable_vpc ? var.private_subnet_ids : null
   vpc_security_group_ids = var.enable_vpc ? var.security_group_ids : null
 
   attach_policy_statements = true
-  policy_statements = {
-    manage_connections = {
-      effect  = "Allow"
-      actions = ["execute-api:ManageConnections", "execute-api:Invoke"]
-      resources = [
-        "${var.websocket_api_execution_arn}/*",
-      ]
+  policy_statements = merge(
+    {
+      manage_connections = {
+        effect  = "Allow"
+        actions = ["execute-api:ManageConnections", "execute-api:Invoke"]
+        resources = [
+          "${var.websocket_api_execution_arn}/*",
+        ]
+      }
+    },
+    var.dynamodb_crud_permissions == null ? {} : {
+      dynamodb = var.dynamodb_crud_permissions
     }
-  }
+  )
 
   tags = var.tags
 }

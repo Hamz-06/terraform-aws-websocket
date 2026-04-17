@@ -17,6 +17,22 @@ module "lambda_function" {
       source_arn = "${var.websocket_api_execution_arn}/*/*"
     }
   }
+  environment_variables = var.environment_variables
+
+  attach_policy_statements = true
+
+  policy_statements = merge(
+    {
+      manage_connections = {
+        effect    = "Allow"
+        actions   = ["execute-api:ManageConnections"]
+        resources = ["${var.websocket_api_execution_arn}/*"]
+      }
+    },
+    var.dynamodb_crud_permissions == null ? {} : {
+      dynamodb = var.dynamodb_crud_permissions
+    }
+  )
 
   tags = var.tags
 }

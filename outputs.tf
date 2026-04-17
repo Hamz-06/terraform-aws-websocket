@@ -23,3 +23,7 @@ output "producer_http_api_endpoint" {
   value       = module.http_gateway.api_endpoint
 }
 
+output "dynamodb_table_name" {
+  description = "Name of the DynamoDB table used for connection management."
+  value       = module.dynamodb.dynamodb_table_name
+}
