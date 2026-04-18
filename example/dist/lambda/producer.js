@@ -22,49 +22,75 @@ __export(producer_exports, {
 });
 module.exports = __toCommonJS(producer_exports);
 var import_client_apigatewaymanagementapi = require("@aws-sdk/client-apigatewaymanagementapi");
+var import_lib_dynamodb = require("@aws-sdk/lib-dynamodb");
+var import_clients = require("./clients");
+const TABLE_NAME = process.env.DYNAMODB_TABLE_NAME;
 async function handler(event) {
-  let url;
+  console.log("Received event:", JSON.stringify(event, null, 2));
   if (!event.body) {
     return {
       statusCode: 400,
       body: JSON.stringify({ message: "Missing body" })
     };
   }
-  const body = JSON.parse(event.body);
-  const connectionId = body.connectionId;
-  if (!connectionId) {
+  const { user_id, message } = JSON.parse(event.body);
+  if (!user_id || !message) {
     return {
       statusCode: 400,
-      body: JSON.stringify({ message: "connectionId required" })
+      body: JSON.stringify({
+        message: "user_id and message required"
+      })
     };
   }
-  const domainName = process.env.WS_DOMAIN_NAME;
-  const stage = process.env.WS_STAGE;
-  url = `https://${domainName}/${stage}`;
-  const client = new import_client_apigatewaymanagementapi.ApiGatewayManagementApiClient({
-    region: process.env.AWS_REGION,
-    endpoint: url
-  });
+  const result = await import_clients.ddbClient.send(
+    new import_lib_dynamodb.QueryCommand({
+      TableName: TABLE_NAME,
+      KeyConditionExpression: "user_id = :uid",
+      ExpressionAttributeValues: {
+        ":uid": user_id
+      }
+    })
+  );
+  const connections = result.Items ?? [];
+  await Promise.all(
+    connections.map(async (item) => {
+      const connectionId = item.connection_id;
+      await sendConnectionMessage(connectionId, user_id, message);
+    })
+  );
+  return {
+    statusCode: 200,
+    body: JSON.stringify({
+      success: true,
+      deliveredTo: connections.length
+    })
+  };
+}
+async function sendConnectionMessage(connectionId, userId, message) {
   try {
-    const command = new import_client_apigatewaymanagementapi.PostToConnectionCommand({
-      ConnectionId: connectionId,
-      Data: Buffer.from(
-        JSON.stringify({
-          type: "notification",
-          message: "Hello client"
-        })
-      )
-    });
-    await client.send(command);
-    return {
-      statusCode: 200,
-      body: JSON.stringify({ success: true })
-    };
+    await import_clients.wsClient.send(
+      new import_client_apigatewaymanagementapi.PostToConnectionCommand({
+        ConnectionId: connectionId,
+        Data: Buffer.from(
+          JSON.stringify({
+            type: "notification",
+            message
+          })
+        )
+      })
+    );
   } catch (err) {
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ message: "Failed to send message" })
-    };
+    if (err instanceof Error && err.name === "GoneException") {
+      await import_clients.ddbClient.send(
+        new import_lib_dynamodb.DeleteCommand({
+          TableName: TABLE_NAME,
+          Key: {
+            user_id: userId,
+            connection_id: connectionId
+          }
+        })
+      );
+    }
   }
 }
 // Annotate the CommonJS export names for ESM import in node:

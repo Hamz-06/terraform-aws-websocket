@@ -27,6 +27,6 @@ module "websocket" {
   stage_name = "dev"
 
   tags = {
-    "test" : "dummy-dev"
+    "test" : "dummy-value"
   }
 }

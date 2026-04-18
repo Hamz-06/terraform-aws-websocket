@@ -21,11 +21,48 @@ __export(connect_exports, {
   handler: () => handler
 });
 module.exports = __toCommonJS(connect_exports);
+var import_lib_dynamodb = require("@aws-sdk/lib-dynamodb");
+var import_clients = require("./clients");
 async function handler(event) {
-  return {
-    statusCode: 200,
-    body: JSON.stringify({ message: "Connected!" })
-  };
+  const connectionId = event.requestContext.connectionId;
+  const userId = event.queryStringParameters?.user_id;
+  try {
+    if (!connectionId) {
+      return {
+        statusCode: 500,
+        body: "Missing connectionId"
+      };
+    }
+    if (!userId) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({
+          message: "user_id query parameter is required"
+        })
+      };
+    }
+    await import_clients.docClient.send(
+      new import_lib_dynamodb.PutCommand({
+        TableName: process.env.DYNAMODB_TABLE_NAME,
+        Item: {
+          user_id: userId,
+          connection_id: connectionId,
+          ttl: Math.floor(Date.now() / 1e3) + 60 * 60 * 24
+          // 24 hours from now
+        }
+      })
+    );
+    return {
+      statusCode: 200,
+      body: "Connected"
+    };
+  } catch (error) {
+    console.error("DynamoDB error:", error);
+    return {
+      statusCode: 500,
+      body: "Connection failed"
+    };
+  }
 }
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {

@@ -21,11 +21,45 @@ __export(disconnect_exports, {
   handler: () => handler
 });
 module.exports = __toCommonJS(disconnect_exports);
-async function handler() {
-  return {
-    statusCode: 200,
-    body: JSON.stringify({ message: "Connected!" })
-  };
+var import_lib_dynamodb = require("@aws-sdk/lib-dynamodb");
+var import_clients = require("./clients");
+async function handler(event) {
+  const connectionId = event.requestContext.connectionId;
+  const tableName = process.env.DYNAMODB_TABLE_NAME;
+  try {
+    const result = await import_clients.ddbClient.send(
+      new import_lib_dynamodb.QueryCommand({
+        TableName: tableName,
+        IndexName: "connection-id-index",
+        KeyConditionExpression: "connection_id = :cid",
+        ExpressionAttributeValues: {
+          ":cid": connectionId
+        }
+      })
+    );
+    const item = result.Items?.[0];
+    if (!item) {
+      return { statusCode: 200, body: JSON.stringify({ message: "Disconnected!" }) };
+    }
+    await import_clients.ddbClient.send(
+      new import_lib_dynamodb.DeleteCommand({
+        TableName: tableName,
+        Key: {
+          user_id: item.user_id,
+          connection_id: item.connection_id
+        }
+      })
+    );
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ message: "Disconnected!" })
+    };
+  } catch (err) {
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ message: "Disconnect failed" })
+    };
+  }
 }
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
