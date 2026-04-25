@@ -22,7 +22,9 @@ jobs:
           node-version: 20
 
       - name: Preview next release
-        run: npx release-rc --dry-run
+        run: npx semantic-release --dry-run
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
