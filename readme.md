@@ -42,6 +42,7 @@ The producer Lambda handler receives the following environment variables.
 - WS_DOMAIN_NAME: WebSocket API domain name (example: `123.execute-api.us-east-1.amazonaws.com`)
 - WS_STAGE: WebSocket API stage (example: `dev`)
 - DYNAMODB_TABLE_NAME: DynamoDB table name for storing connections (example: `websocket-connections`)
+- ENVIRONMENT: Deployment environment (example: `dev`, `prod`, `local`)
 
 ## How To Run The Example
 
@@ -98,3 +99,7 @@ user3 -> conn3
 user3 -> conn4
 user3 -> conn5
 ```
+
+## How to commit 
+
+Follow this link  [How to commit](https://semantic-release.gitbook.io/semantic-release#commit-message-format) 

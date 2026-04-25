@@ -48,3 +48,5 @@ terraform.rc
 # planout
 
 builds/
+
+node_modules/
