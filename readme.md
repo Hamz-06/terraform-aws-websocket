@@ -1,18 +1,33 @@
 
-Terraform module to build a WebSocket API using API Gateway and Lambda functions.
+# Terraform AWS WebSocket Module
 
-This websocket module is specifically designed to decouple the connection management logic in microservice architecture. We connect to the websocket API
-and have the connection stored by AWS and we save the connection ID in a DynamoDB table (not implemented yet). We can then make a http request to a http endpoint with the connection ID and message we want to send to the client. Future improvements will allow you to send the user ID instead of the connection ID and we will look up the connection ID in the DynamoDB table and send the message to all connections for that user.
+[![Module Version](https://img.shields.io/github/v/release/Hamz-06/terraform-aws-websocket?label=module%20version)](https://github.com/Hamz-06/terraform-aws-websocket/releases)
 
-Lambda functions created: 
+Build a WebSocket API on AWS using API Gateway, Lambda, and DynamoDB.
+
+## Overview
+
+This module is designed to decouple WebSocket connection management in a microservice architecture.
+
+- Clients connect to the WebSocket API.
+- Connection data is stored in DynamoDB.
+- A producer endpoint accepts a `user_id` and `message`.
+- The producer Lambda looks up all active connections for that user and fans out the message.
+
+## Lambda Handlers
+
 - Connect handler
 - Disconnect handler
+- Producer handler
+- Default handler
 
-producer lambda handlers receives these environment variables by default:
+## Environment Variables
 
-*Environment variables*
-RESERVED
-- AWS_REGION 
+The producer Lambda handler receives the following environment variables.
+
+### Reserved
+
+- AWS_REGION
 - AWS_ACCESS_KEY_ID
 - AWS_SECRET_ACCESS_KEY
 - AWS_SESSION_TOKEN
@@ -22,24 +37,64 @@ RESERVED
 - AWS_LAMBDA_LOG_GROUP_NAME
 - AWS_LAMBDA_LOG_STREAM_NAME
 
-- WS_DOMAIN_NAME -> domain name of the WebSocket API (123.execute-api.us-east-1.amazonaws.com)
-- WS_STAGE -> stage name of the WebSocket API (dev)
+### Custom
 
+- WS_DOMAIN_NAME: WebSocket API domain name (example: `123.execute-api.us-east-1.amazonaws.com`)
+- WS_STAGE: WebSocket API stage (example: `dev`)
+- DYNAMODB_TABLE_NAME: DynamoDB table name for storing connections (example: `websocket-connections`)
 
+## How To Run The Example
 
-*Roadmap*:
-- Add dynamo DB table for connection management, something like this: Allows for multiple connections per user
-Table name: websocket-connections
+1. Move to the example folder.
 
-user_id (partition key) -> connectionId (sort key)
+```bash
+cd example
+```
 
-Example: 
+2. Install dependencies and build Lambda functions.
+
+```bash
+npm install
+npm run build
+```
+
+3. Deploy infrastructure.
+
+```bash
+terraform apply
+```
+
+4. Connect to the WebSocket API.
+
+```text
+wss://rug2.execute-api.us-east-1.amazonaws.com/dev?user_id=123
+```
+
+5. Send a POST request to the producer endpoint with this payload.
+
+```json
+{
+  "user_id": "123",
+  "message": "Hello, World!"
+}
+```
+
+6. Confirm the message appears in your WebSocket client.
+7. Repeat with a different `user_id` to target another user.
+
+## Connection Table Model
+
+Table name: `websocket-connections`
+
+- Partition key: `user_id`
+- Sort key: `connection_id`
+
+Example records:
+
+```text
 user1 -> conn1
-
 user2 -> conn2
-
 user3 -> conn3
 user3 -> conn4
 user3 -> conn5
-
-- Add a way to run npm run build before pushing the code and before terraform apply
+```

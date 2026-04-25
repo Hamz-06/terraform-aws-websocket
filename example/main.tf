@@ -2,7 +2,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 6.28.0"
+      version = "~> 6.40.0"
     }
   }
 }
@@ -27,6 +27,6 @@ module "websocket" {
   stage_name = "dev"
 
   tags = {
-    "test" : "dummy-dev"
+    "test" : "dummy-value"
   }
 }
