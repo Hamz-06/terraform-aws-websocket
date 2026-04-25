@@ -21,9 +21,6 @@ jobs:
         with:
           node-version: 20
 
-      - name: Install dependencies
-        run: npm ci
-
       - name: Preview next release
         run: npx release-rc --dry-run
 
