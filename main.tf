@@ -56,6 +56,7 @@ locals {
     WS_STAGE            = var.stage_name,
     WS_DOMAIN_NAME      = module.websocket.domain_name,
     DYNAMODB_TABLE_NAME = module.dynamodb.dynamodb_table_name
+    ENVIRONMENT          = var.stage_name
   }
 }
 
