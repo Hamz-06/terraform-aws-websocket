@@ -1,0 +1,28 @@
+{
+  "name": "terraform-aws-websocket",
+  "version": "1.0.0",
+  "description": "[![Module Version](https://img.shields.io/github/v/release/Hamz-06/terraform-aws-websocket?label=module%20version)](https://github.com/Hamz-06/terraform-aws-websocket/releases)",
+  "main": "index.js",
+  "directories": {
+    "example": "example"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "husky"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Hamz-06/terraform-aws-websocket.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Hamz-06/terraform-aws-websocket/issues"
+  },
+  "homepage": "https://github.com/Hamz-06/terraform-aws-websocket#readme",
+  "devDependencies": {
+    "husky": "^9.1.7"
+  }
+}

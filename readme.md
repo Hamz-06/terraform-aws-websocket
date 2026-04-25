@@ -99,3 +99,7 @@ user3 -> conn3
 user3 -> conn4
 user3 -> conn5
 ```
+
+## How to commit 
+
+Follow this link  [How to commit](https://semantic-release.gitbook.io/semantic-release#commit-message-format) 
