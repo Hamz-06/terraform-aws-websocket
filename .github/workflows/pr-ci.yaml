@@ -21,8 +21,12 @@ jobs:
         with:
           node-version: 20
 
+      - name: Install Semantic Release
+        run: |
+          npm install -g semantic-release @semantic-release/git @semantic-release/github @semantic-release/changelog @semantic-release/commit-analyzer @semantic-release/release-notes-generator
+
       - name: Preview next release
-        run: npx semantic-release --dry-run
+        run: semantic-release --dry-run
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
