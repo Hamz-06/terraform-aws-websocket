@@ -9,9 +9,9 @@ variable "application_name" {
 }
 
 variable "stage_name" {
-  description = "Stage name for the WebSocket API (for example, $default, dev, or prod)."
+  description = "Stage name for the WebSocket API (for example, local, dev, or prod)."
   type        = string
-  default     = "$default"
+  default     = "local"
 }
 
 // ** connect integration variables **
