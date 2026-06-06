@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/Hamz-06/terraform-aws-websocket/compare/v1.1.0...v1.2.0) (2026-06-06)
+
+
+### Features
+
+* **repo:** add cloudwatch_logs_retention_in_days option ([0d38506](https://github.com/Hamz-06/terraform-aws-websocket/commit/0d3850650890aad0ca26f4bd1750d6883b95e7f3))
+
 # [1.1.0](https://github.com/Hamz-06/terraform-aws-websocket/compare/v1.0.0...v1.1.0) (2026-04-25)
 
 
