@@ -9,6 +9,7 @@ module "lambda_function" {
   create_package                          = true
   source_path                             = var.source_path
   create_current_version_allowed_triggers = false
+  cloudwatch_logs_retention_in_days       = var.cloudwatch_logs_retention_in_days
 
   # API Gateway allowed triggers
   allowed_triggers = {

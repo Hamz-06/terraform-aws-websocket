@@ -76,6 +76,12 @@ variable "lambda_runtime" {
   default     = "nodejs20.x"
 }
 
+variable "cloudwatch_logs_retention_in_days" {
+  description = "Number of days to retain Lambda CloudWatch log groups."
+  type        = number
+  default     = 14
+}
+
 variable "tags" {
   description = "Tags to apply to all supported resources."
   type        = map(string)
