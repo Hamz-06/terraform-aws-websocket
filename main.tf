@@ -72,15 +72,16 @@ module "dynamodb" {
 module "producer_lambda" {
   source = "./modules/http-lambda-function"
 
-  function_name               = "${var.application_name}-producer-lambda"
-  source_path                 = var.producer_lambda_source_path
-  handler                     = var.producer_lambda_handler
-  runtime                     = var.lambda_runtime
-  http_api_execution_arn      = module.http_gateway.api_execution_arn
-  websocket_api_execution_arn = module.websocket.api_execution_arn
-  enable_vpc                  = false
-  environment_variables       = local.shared_lambda_environment_variables
-  dynamodb_crud_permissions   = local.dynamodb_crud_permissions
+  function_name                     = "${var.application_name}-producer-lambda"
+  source_path                       = var.producer_lambda_source_path
+  handler                           = var.producer_lambda_handler
+  runtime                           = var.lambda_runtime
+  cloudwatch_logs_retention_in_days = var.cloudwatch_logs_retention_in_days
+  http_api_execution_arn            = module.http_gateway.api_execution_arn
+  websocket_api_execution_arn       = module.websocket.api_execution_arn
+  enable_vpc                        = false
+  environment_variables             = local.shared_lambda_environment_variables
+  dynamodb_crud_permissions         = local.dynamodb_crud_permissions
 
   tags = var.tags
 }
@@ -88,13 +89,14 @@ module "producer_lambda" {
 module "websocket_connect_lambda" {
   source = "./modules/websocket-lambda-function"
 
-  function_name               = "${var.application_name}-connect-lambda"
-  source_path                 = local.connect_lambda_source_path
-  handler                     = var.connect_lambda_handler
-  runtime                     = var.lambda_runtime
-  websocket_api_execution_arn = module.websocket.api_execution_arn
-  dynamodb_crud_permissions   = local.dynamodb_crud_permissions
-  environment_variables       = local.shared_lambda_environment_variables
+  function_name                     = "${var.application_name}-connect-lambda"
+  source_path                       = local.connect_lambda_source_path
+  handler                           = var.connect_lambda_handler
+  runtime                           = var.lambda_runtime
+  cloudwatch_logs_retention_in_days = var.cloudwatch_logs_retention_in_days
+  websocket_api_execution_arn       = module.websocket.api_execution_arn
+  dynamodb_crud_permissions         = local.dynamodb_crud_permissions
+  environment_variables             = local.shared_lambda_environment_variables
 
   tags = var.tags
 }
@@ -102,26 +104,28 @@ module "websocket_connect_lambda" {
 module "websocket_disconnect_lambda" {
   source = "./modules/websocket-lambda-function"
 
-  function_name               = "${var.application_name}-disconnect-lambda"
-  source_path                 = local.disconnect_lambda_source_path
-  handler                     = var.disconnect_lambda_handler
-  runtime                     = var.lambda_runtime
-  websocket_api_execution_arn = module.websocket.api_execution_arn
-  dynamodb_crud_permissions   = local.dynamodb_crud_permissions
-  environment_variables       = local.shared_lambda_environment_variables
+  function_name                     = "${var.application_name}-disconnect-lambda"
+  source_path                       = local.disconnect_lambda_source_path
+  handler                           = var.disconnect_lambda_handler
+  runtime                           = var.lambda_runtime
+  cloudwatch_logs_retention_in_days = var.cloudwatch_logs_retention_in_days
+  websocket_api_execution_arn       = module.websocket.api_execution_arn
+  dynamodb_crud_permissions         = local.dynamodb_crud_permissions
+  environment_variables             = local.shared_lambda_environment_variables
 
   tags = var.tags
 }
 
 module "websocket_default_lambda" {
-  source                      = "./modules/websocket-lambda-function"
-  function_name               = "${var.application_name}-default-lambda"
-  source_path                 = local.default_lambda_source_path
-  handler                     = var.default_lambda_handler
-  runtime                     = var.lambda_runtime
-  websocket_api_execution_arn = module.websocket.api_execution_arn
-  dynamodb_crud_permissions   = local.dynamodb_crud_permissions
-  environment_variables       = local.shared_lambda_environment_variables
+  source                            = "./modules/websocket-lambda-function"
+  function_name                     = "${var.application_name}-default-lambda"
+  source_path                       = local.default_lambda_source_path
+  handler                           = var.default_lambda_handler
+  runtime                           = var.lambda_runtime
+  cloudwatch_logs_retention_in_days = var.cloudwatch_logs_retention_in_days
+  websocket_api_execution_arn       = module.websocket.api_execution_arn
+  dynamodb_crud_permissions         = local.dynamodb_crud_permissions
+  environment_variables             = local.shared_lambda_environment_variables
 
   tags = var.tags
 }
