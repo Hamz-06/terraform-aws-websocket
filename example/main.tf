@@ -26,6 +26,8 @@ module "websocket" {
 
   stage_name = "dev"
 
+  cloudwatch_logs_retention_in_days = 30
+
   tags = {
     "test" : "dummy-value"
   }
