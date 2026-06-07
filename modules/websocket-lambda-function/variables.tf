@@ -12,7 +12,6 @@ variable "handler" {
 variable "runtime" {
   description = "Lambda runtime used in s3_zip mode."
   type        = string
-  default     = "nodejs20.x"
 }
 
 variable "s3_artifact" {
