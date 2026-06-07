@@ -12,26 +12,6 @@ provider "aws" {
 }
 
 locals {
-  lambda_source_path_base = var.lambda_source_path_base != null ? trimsuffix(var.lambda_source_path_base, "/") : null
-
-  connect_lambda_source_path = abspath(
-    local.lambda_source_path_base != null
-    ? "${local.lambda_source_path_base}/${var.connect_lambda_source_path}"
-    : var.connect_lambda_source_path
-  )
-
-  disconnect_lambda_source_path = abspath(
-    local.lambda_source_path_base != null
-    ? "${local.lambda_source_path_base}/${var.disconnect_lambda_source_path}"
-    : var.disconnect_lambda_source_path
-  )
-
-  default_lambda_source_path = abspath(
-    local.lambda_source_path_base != null
-    ? "${local.lambda_source_path_base}/${var.default_lambda_source_path}"
-    : var.default_lambda_source_path
-  )
-
   dynamodb_crud_permissions = {
     effect = "Allow",
     actions = [
@@ -58,6 +38,25 @@ locals {
     DYNAMODB_TABLE_NAME = module.dynamodb.dynamodb_table_name
     ENVIRONMENT         = var.stage_name
   }
+
+  normalized_lambdas = {
+    connect = {
+      handler = var.lambda_handlers.connect
+      s3      = var.lambdas.connect.s3
+    }
+    disconnect = {
+      handler = var.lambda_handlers.disconnect
+      s3      = var.lambdas.disconnect.s3
+    }
+    default = {
+      handler = var.lambda_handlers.default
+      s3      = var.lambdas.default.s3
+    }
+    producer = {
+      handler = var.lambda_handlers.producer
+      s3      = var.lambdas.producer.s3
+    }
+  }
 }
 
 // ** dynamo **
@@ -73,8 +72,8 @@ module "producer_lambda" {
   source = "./modules/http-lambda-function"
 
   function_name                     = "${var.application_name}-producer-lambda"
-  source_path                       = var.producer_lambda_source_path
-  handler                           = var.producer_lambda_handler
+  s3_artifact                       = local.normalized_lambdas.producer.s3
+  handler                           = local.normalized_lambdas.producer.handler
   runtime                           = var.lambda_runtime
   cloudwatch_logs_retention_in_days = var.cloudwatch_logs_retention_in_days
   http_api_execution_arn            = module.http_gateway.api_execution_arn
@@ -90,8 +89,8 @@ module "websocket_connect_lambda" {
   source = "./modules/websocket-lambda-function"
 
   function_name                     = "${var.application_name}-connect-lambda"
-  source_path                       = local.connect_lambda_source_path
-  handler                           = var.connect_lambda_handler
+  s3_artifact                       = local.normalized_lambdas.connect.s3
+  handler                           = local.normalized_lambdas.connect.handler
   runtime                           = var.lambda_runtime
   cloudwatch_logs_retention_in_days = var.cloudwatch_logs_retention_in_days
   websocket_api_execution_arn       = module.websocket.api_execution_arn
@@ -105,8 +104,8 @@ module "websocket_disconnect_lambda" {
   source = "./modules/websocket-lambda-function"
 
   function_name                     = "${var.application_name}-disconnect-lambda"
-  source_path                       = local.disconnect_lambda_source_path
-  handler                           = var.disconnect_lambda_handler
+  s3_artifact                       = local.normalized_lambdas.disconnect.s3
+  handler                           = local.normalized_lambdas.disconnect.handler
   runtime                           = var.lambda_runtime
   cloudwatch_logs_retention_in_days = var.cloudwatch_logs_retention_in_days
   websocket_api_execution_arn       = module.websocket.api_execution_arn
@@ -119,8 +118,8 @@ module "websocket_disconnect_lambda" {
 module "websocket_default_lambda" {
   source                            = "./modules/websocket-lambda-function"
   function_name                     = "${var.application_name}-default-lambda"
-  source_path                       = local.default_lambda_source_path
-  handler                           = var.default_lambda_handler
+  s3_artifact                       = local.normalized_lambdas.default.s3
+  handler                           = local.normalized_lambdas.default.handler
   runtime                           = var.lambda_runtime
   cloudwatch_logs_retention_in_days = var.cloudwatch_logs_retention_in_days
   websocket_api_execution_arn       = module.websocket.api_execution_arn

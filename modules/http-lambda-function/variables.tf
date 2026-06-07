@@ -3,21 +3,35 @@ variable "function_name" {
   type        = string
 }
 
-variable "source_path" {
-  description = "Path to the Lambda source file or directory."
-  type        = string
-}
-
 variable "handler" {
-  description = "Lambda handler entrypoint (for example, index.handler)."
+  description = "Lambda handler entrypoint used in s3_zip mode (for example, index.handler)."
   type        = string
   default     = "index.handler"
 }
 
 variable "runtime" {
-  description = "Lambda runtime."
+  description = "Lambda runtime used in s3_zip mode."
   type        = string
   default     = "nodejs20.x"
+}
+
+variable "s3_artifact" {
+  description = "S3 artifact metadata used by this module."
+  type = object({
+    bucket           = string
+    key              = string
+    source_code_hash = string
+    object_version   = optional(string)
+  })
+
+  validation {
+    condition = (
+      length(trimspace(var.s3_artifact.bucket)) > 0 &&
+      length(trimspace(var.s3_artifact.key)) > 0 &&
+      length(trimspace(var.s3_artifact.source_code_hash)) > 0
+    )
+    error_message = "s3_artifact.bucket, s3_artifact.key, and s3_artifact.source_code_hash must be non-empty."
+  }
 }
 
 variable "cloudwatch_logs_retention_in_days" {
