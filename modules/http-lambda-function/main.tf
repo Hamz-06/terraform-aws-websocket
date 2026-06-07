@@ -1,17 +1,24 @@
-
 module "lambda_function" {
   source = "terraform-aws-modules/lambda/aws"
 
   function_name = var.function_name
+  package_type  = "Zip"
   runtime       = var.runtime
   handler       = var.handler
 
-  create_package                          = true
-  source_path                             = var.source_path
+  create_package = false
+  s3_existing_package = {
+    bucket     = var.s3_artifact.bucket
+    key        = var.s3_artifact.key
+    version_id = try(var.s3_artifact.object_version, null)
+  }
+
+  # Keep hash metadata explicit for deterministic artifact tracking.
+  hash_extra                              = var.s3_artifact.source_code_hash
+  ignore_source_code_hash                 = false
   create_current_version_allowed_triggers = false
   cloudwatch_logs_retention_in_days       = var.cloudwatch_logs_retention_in_days
 
-  # API Gateway allowed triggers
   allowed_triggers = {
     http_api = {
       service    = "apigateway"
@@ -21,7 +28,6 @@ module "lambda_function" {
 
   environment_variables = var.environment_variables
 
-  # Optional VPC configuration
   vpc_subnet_ids         = var.enable_vpc ? var.private_subnet_ids : null
   vpc_security_group_ids = var.enable_vpc ? var.security_group_ids : null
 

@@ -14,66 +14,89 @@ variable "stage_name" {
   default     = "local"
 }
 
-// ** connect integration variables **
-variable "connect_lambda_source_path" {
-  description = "Path to the source file or directory for the $connect Lambda function."
-  type        = string
-}
-
-variable "connect_lambda_handler" {
-  description = "Handler entrypoint for the $connect Lambda function (for example, connect.handler)."
-  type        = string
-  default     = "connect.handler"
-}
-
-
-// ** disconnect integration variables **
-variable "disconnect_lambda_source_path" {
-  description = "Path to the source file or directory for the $disconnect Lambda function."
-  type        = string
-}
-
-variable "disconnect_lambda_handler" {
-  description = "Handler entrypoint for the $disconnect Lambda function (for example, disconnect.handler)."
-  type        = string
-  default     = "disconnect.handler"
-}
-
-// ** default integration variables **
-variable "default_lambda_source_path" {
-  description = "Path to the source file or directory for the $default Lambda function."
-  type        = string
-}
-variable "default_lambda_handler" {
-  description = "Handler entrypoint for the $default Lambda function (for example, default.handler)."
-  type        = string
-  default     = "default.handler"
-
-}
-
-// ** producer integration variables **
-variable "producer_lambda_source_path" {
-  description = "Path to the source file or directory for the producer Lambda function."
-  type        = string
-
-}
-
-variable "producer_lambda_handler" {
-  description = "HTTP Lambda handler entrypoint for the producer Lambda function"
-  type        = string
-  default     = "producer.handler"
-}
-
-variable "lambda_source_path_base" {
-  description = "Optional base path prepended to relative Lambda source paths. Set this to path.module in the calling module when source files are module-relative."
-  type        = string
-  default     = null
-}
-
 variable "lambda_runtime" {
-  description = "Lambda runtime."
+  description = "Lambda runtime used in s3_zip mode."
   type        = string
-  default     = "nodejs20.x"
+  default     = "nodejs24.x"
+}
+
+variable "lambda_handlers" {
+  description = "Lambda handlers used in s3_zip mode for websocket and producer functions."
+  type = object({
+    connect    = string
+    disconnect = string
+    default    = string
+    producer   = string
+  })
+  default = {
+    connect    = "connect.handler"
+    disconnect = "disconnect.handler"
+    default    = "default.handler"
+    producer   = "producer.handler"
+  }
+}
+
+variable "lambdas" {
+  description = <<-EOT
+  Artifact contract for all 4 Lambda functions (connect, disconnect, default, producer).
+  Provide lambdas.<name>.s3.bucket, key, source_code_hash, and optional object_version.
+
+  Use immutable artifact identifiers (for example, commit SHA or content-addressed keys/tags).
+  Avoid mutable references such as latest when you need deterministic deployments.
+  EOT
+
+  type = object({
+    connect = object({
+      s3 = object({
+        bucket           = string
+        key              = string
+        source_code_hash = string
+        object_version   = optional(string)
+      })
+    })
+    disconnect = object({
+      s3 = object({
+        bucket           = string
+        key              = string
+        source_code_hash = string
+        object_version   = optional(string)
+      })
+    })
+    default = object({
+      s3 = object({
+        bucket           = string
+        key              = string
+        source_code_hash = string
+        object_version   = optional(string)
+      })
+    })
+    producer = object({
+      s3 = object({
+        bucket           = string
+        key              = string
+        source_code_hash = string
+        object_version   = optional(string)
+      })
+    })
+  })
+
+  validation {
+    condition = (
+      length(trimspace(var.lambdas.connect.s3.bucket)) > 0 &&
+      length(trimspace(var.lambdas.connect.s3.key)) > 0 &&
+      length(trimspace(var.lambdas.connect.s3.source_code_hash)) > 0 &&
+      length(trimspace(var.lambdas.disconnect.s3.bucket)) > 0 &&
+      length(trimspace(var.lambdas.disconnect.s3.key)) > 0 &&
+      length(trimspace(var.lambdas.disconnect.s3.source_code_hash)) > 0 &&
+      length(trimspace(var.lambdas.default.s3.bucket)) > 0 &&
+      length(trimspace(var.lambdas.default.s3.key)) > 0 &&
+      length(trimspace(var.lambdas.default.s3.source_code_hash)) > 0 &&
+      length(trimspace(var.lambdas.producer.s3.bucket)) > 0 &&
+      length(trimspace(var.lambdas.producer.s3.key)) > 0 &&
+      length(trimspace(var.lambdas.producer.s3.source_code_hash)) > 0
+    )
+    error_message = "Each lambdas.<function>.s3 must include non-empty bucket, key, and source_code_hash."
+  }
 }
 
 variable "cloudwatch_logs_retention_in_days" {

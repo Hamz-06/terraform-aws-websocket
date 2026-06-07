@@ -3,9 +3,39 @@ output "connect_lambda_invoke_arn" {
   value       = module.websocket_connect_lambda.lambda_invoke_arn
 }
 
+output "connect_lambda_arn" {
+  description = "ARN for the generated $connect Lambda function."
+  value       = module.websocket_connect_lambda.lambda_arn
+}
+
 output "disconnect_lambda_invoke_arn" {
   description = "Invoke ARN for the generated $disconnect Lambda function."
   value       = module.websocket_disconnect_lambda.lambda_invoke_arn
+}
+
+output "disconnect_lambda_arn" {
+  description = "ARN for the generated $disconnect Lambda function."
+  value       = module.websocket_disconnect_lambda.lambda_arn
+}
+
+output "default_lambda_invoke_arn" {
+  description = "Invoke ARN for the generated $default Lambda function."
+  value       = module.websocket_default_lambda.lambda_invoke_arn
+}
+
+output "default_lambda_arn" {
+  description = "ARN for the generated $default Lambda function."
+  value       = module.websocket_default_lambda.lambda_arn
+}
+
+output "producer_lambda_invoke_arn" {
+  description = "Invoke ARN for the producer Lambda function."
+  value       = module.producer_lambda.lambda_invoke_arn
+}
+
+output "producer_lambda_arn" {
+  description = "ARN for the producer Lambda function."
+  value       = module.producer_lambda.lambda_arn
 }
 
 output "websocket_api_endpoint" {
