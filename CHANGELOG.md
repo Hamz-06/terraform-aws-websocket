@@ -1,3 +1,15 @@
+# [2.0.0](https://github.com/Hamz-06/terraform-aws-websocket/compare/v1.2.0...v2.0.0) (2026-06-07)
+
+
+### Features
+
+* **repo:** lambda function reads from s3 bucket ([3450fc5](https://github.com/Hamz-06/terraform-aws-websocket/commit/3450fc50cf2d6880e78e586e08d0955143385e07))
+
+
+### BREAKING CHANGES
+
+* **repo:** Breaking change, removed old way of pushing code to lambda function
+
 # [1.2.0](https://github.com/Hamz-06/terraform-aws-websocket/compare/v1.1.0...v1.2.0) (2026-06-06)
 
 
