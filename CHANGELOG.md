@@ -1,3 +1,10 @@
+# [2.1.0](https://github.com/Hamz-06/terraform-aws-websocket/compare/v2.0.0...v2.1.0) (2026-06-08)
+
+
+### Features
+
+* **repo:** fix producer api endpoint output ([8cb9f8d](https://github.com/Hamz-06/terraform-aws-websocket/commit/8cb9f8d6b63d360cd3defca56dfdd82a3d7d02e5))
+
 # [2.0.0](https://github.com/Hamz-06/terraform-aws-websocket/compare/v1.2.0...v2.0.0) (2026-06-07)
 
 
