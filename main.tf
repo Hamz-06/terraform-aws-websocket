@@ -32,12 +32,15 @@ locals {
     ]
   }
 
-  shared_lambda_environment_variables = {
-    WS_STAGE            = var.stage_name,
-    WS_DOMAIN_NAME      = module.websocket.domain_name,
-    DYNAMODB_TABLE_NAME = module.dynamodb.dynamodb_table_name
-    ENVIRONMENT         = var.stage_name
-  }
+  shared_lambda_environment_variables = merge(
+    {
+      WS_STAGE            = var.stage_name,
+      WS_DOMAIN_NAME      = module.websocket.domain_name,
+      DYNAMODB_TABLE_NAME = module.dynamodb.dynamodb_table_name
+      ENVIRONMENT         = var.stage_name
+    },
+    var.lambda_environment_variables
+  )
 
   normalized_lambdas = {
     connect = {
@@ -81,6 +84,7 @@ module "producer_lambda" {
   enable_vpc                        = false
   environment_variables             = local.shared_lambda_environment_variables
   dynamodb_crud_permissions         = local.dynamodb_crud_permissions
+  additional_policy_statements      = var.additional_policy_statements
 
   tags = var.tags
 }
@@ -96,6 +100,7 @@ module "websocket_connect_lambda" {
   websocket_api_execution_arn       = module.websocket.api_execution_arn
   dynamodb_crud_permissions         = local.dynamodb_crud_permissions
   environment_variables             = local.shared_lambda_environment_variables
+  additional_policy_statements      = var.additional_policy_statements
 
   tags = var.tags
 }
@@ -111,6 +116,7 @@ module "websocket_disconnect_lambda" {
   websocket_api_execution_arn       = module.websocket.api_execution_arn
   dynamodb_crud_permissions         = local.dynamodb_crud_permissions
   environment_variables             = local.shared_lambda_environment_variables
+  additional_policy_statements      = var.additional_policy_statements
 
   tags = var.tags
 }
@@ -125,6 +131,7 @@ module "websocket_default_lambda" {
   websocket_api_execution_arn       = module.websocket.api_execution_arn
   dynamodb_crud_permissions         = local.dynamodb_crud_permissions
   environment_variables             = local.shared_lambda_environment_variables
+  additional_policy_statements      = var.additional_policy_statements
 
   tags = var.tags
 }

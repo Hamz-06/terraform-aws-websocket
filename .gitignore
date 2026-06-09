@@ -50,3 +50,4 @@ terraform.rc
 builds/
 
 node_modules/
+__test_infra__

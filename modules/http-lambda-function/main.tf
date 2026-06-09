@@ -44,7 +44,8 @@ module "lambda_function" {
     },
     var.dynamodb_crud_permissions == null ? {} : {
       dynamodb = var.dynamodb_crud_permissions
-    }
+    },
+    var.additional_policy_statements
   )
 
   tags = var.tags
