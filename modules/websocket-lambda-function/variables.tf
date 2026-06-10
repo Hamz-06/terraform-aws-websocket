@@ -62,3 +62,33 @@ variable "environment_variables" {
   type        = map(string)
   default     = {}
 }
+
+variable "additional_policy_statements" {
+  description = "Optional map of extra IAM policy statements to attach to the Lambda function. Statements support effect with either actions or not_actions, and either resources or not_resources."
+  type = map(object({
+    effect        = string
+    actions       = optional(list(string))
+    not_actions   = optional(list(string))
+    resources     = optional(list(string))
+    not_resources = optional(list(string))
+  }))
+  default = {}
+
+  validation {
+    condition = alltrue([
+      for statement in values(var.additional_policy_statements) : (
+        ((try(length(statement.actions), 0) > 0) != (try(length(statement.not_actions), 0) > 0)) &&
+        ((try(length(statement.resources), 0) > 0) != (try(length(statement.not_resources), 0) > 0))
+      )
+    ])
+    error_message = "Each additional policy statement must include exactly one of actions/not_actions and exactly one of resources/not_resources."
+  }
+
+  validation {
+    condition = (
+      !contains(keys(var.additional_policy_statements), "manage_connections") &&
+      !contains(keys(var.additional_policy_statements), "dynamodb")
+    )
+    error_message = "additional_policy_statements keys 'manage_connections' and 'dynamodb' are reserved by the module."
+  }
+}
