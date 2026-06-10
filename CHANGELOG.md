@@ -1,3 +1,10 @@
+# [2.2.0](https://github.com/Hamz-06/terraform-aws-websocket/compare/v2.1.0...v2.2.0) (2026-06-10)
+
+
+### Features
+
+* **repo:** pass env variables + add custom iam policy ([ff188cf](https://github.com/Hamz-06/terraform-aws-websocket/commit/ff188cfee3cf046d5989e397c41a10f4b2e7898c))
+
 # [2.1.0](https://github.com/Hamz-06/terraform-aws-websocket/compare/v2.0.0...v2.1.0) (2026-06-08)
 
 
