@@ -1,3 +1,10 @@
+# [2.3.0](https://github.com/Hamz-06/terraform-aws-websocket/compare/v2.2.0...v2.3.0) (2026-06-11)
+
+
+### Features
+
+* **repo:** added application env ([857b8b9](https://github.com/Hamz-06/terraform-aws-websocket/commit/857b8b9120b50a28003b7d92802c06dee0a80c28))
+
 # [2.2.0](https://github.com/Hamz-06/terraform-aws-websocket/compare/v2.1.0...v2.2.0) (2026-06-10)
 
 
