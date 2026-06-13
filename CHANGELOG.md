@@ -1,3 +1,15 @@
+# [3.0.0](https://github.com/Hamz-06/terraform-aws-websocket/compare/v2.3.0...v3.0.0) (2026-06-13)
+
+
+### Features
+
+* **repo:** separate infrastructure from code deployment ([5ea7b1b](https://github.com/Hamz-06/terraform-aws-websocket/commit/5ea7b1b81514f1ca5a2435de5c493168bf00fbf7))
+
+
+### BREAKING CHANGES
+
+* **repo:** separate infra and code
+
 # [2.3.0](https://github.com/Hamz-06/terraform-aws-websocket/compare/v2.2.0...v2.3.0) (2026-06-11)
 
 
