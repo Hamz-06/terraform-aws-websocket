@@ -14,25 +14,6 @@ variable "runtime" {
   type        = string
 }
 
-variable "s3_artifact" {
-  description = "S3 artifact metadata used by this module."
-  type = object({
-    bucket           = string
-    key              = string
-    source_code_hash = string
-    object_version   = optional(string)
-  })
-
-  validation {
-    condition = (
-      length(trimspace(var.s3_artifact.bucket)) > 0 &&
-      length(trimspace(var.s3_artifact.key)) > 0 &&
-      length(trimspace(var.s3_artifact.source_code_hash)) > 0
-    )
-    error_message = "s3_artifact.bucket, s3_artifact.key, and s3_artifact.source_code_hash must be non-empty."
-  }
-}
-
 variable "cloudwatch_logs_retention_in_days" {
   description = "Number of days to retain CloudWatch logs for the Lambda function."
   type        = number
