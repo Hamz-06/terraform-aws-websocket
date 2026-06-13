@@ -4,6 +4,10 @@ terraform {
       source  = "hashicorp/aws"
       version = ">= 6.40.0"
     }
+    archive = {
+      source  = "hashicorp/archive"
+      version = ">= 2.0.0"
+    }
   }
 }
 
@@ -43,24 +47,13 @@ locals {
     var.lambda_environment_variables
   )
 
-  normalized_lambdas = {
-    connect = {
-      handler = var.lambda_handlers.connect
-      s3      = var.lambdas.connect.s3
-    }
-    disconnect = {
-      handler = var.lambda_handlers.disconnect
-      s3      = var.lambdas.disconnect.s3
-    }
-    default = {
-      handler = var.lambda_handlers.default
-      s3      = var.lambdas.default.s3
-    }
-    producer = {
-      handler = var.lambda_handlers.producer
-      s3      = var.lambdas.producer.s3
-    }
+  handler = {
+    connect    = "connect.handler"
+    disconnect = "disconnect.handler"
+    default    = "default.handler"
+    producer   = "producer.handler"
   }
+
 }
 
 // ** dynamo **
@@ -76,8 +69,7 @@ module "producer_lambda" {
   source = "./modules/http-lambda-function"
 
   function_name                     = "${var.application_name}-producer-lambda"
-  s3_artifact                       = local.normalized_lambdas.producer.s3
-  handler                           = local.normalized_lambdas.producer.handler
+  handler                           = local.handler.producer
   runtime                           = var.lambda_runtime
   cloudwatch_logs_retention_in_days = var.cloudwatch_logs_retention_in_days
   http_api_execution_arn            = module.http_gateway.api_execution_arn
@@ -94,8 +86,7 @@ module "websocket_connect_lambda" {
   source = "./modules/websocket-lambda-function"
 
   function_name                     = "${var.application_name}-connect-lambda"
-  s3_artifact                       = local.normalized_lambdas.connect.s3
-  handler                           = local.normalized_lambdas.connect.handler
+  handler                           = local.handler.connect
   runtime                           = var.lambda_runtime
   cloudwatch_logs_retention_in_days = var.cloudwatch_logs_retention_in_days
   websocket_api_execution_arn       = module.websocket.api_execution_arn
@@ -110,8 +101,7 @@ module "websocket_disconnect_lambda" {
   source = "./modules/websocket-lambda-function"
 
   function_name                     = "${var.application_name}-disconnect-lambda"
-  s3_artifact                       = local.normalized_lambdas.disconnect.s3
-  handler                           = local.normalized_lambdas.disconnect.handler
+  handler                           = local.handler.disconnect
   runtime                           = var.lambda_runtime
   cloudwatch_logs_retention_in_days = var.cloudwatch_logs_retention_in_days
   websocket_api_execution_arn       = module.websocket.api_execution_arn
@@ -125,8 +115,7 @@ module "websocket_disconnect_lambda" {
 module "websocket_default_lambda" {
   source                            = "./modules/websocket-lambda-function"
   function_name                     = "${var.application_name}-default-lambda"
-  s3_artifact                       = local.normalized_lambdas.default.s3
-  handler                           = local.normalized_lambdas.default.handler
+  handler                           = local.handler.default
   runtime                           = var.lambda_runtime
   cloudwatch_logs_retention_in_days = var.cloudwatch_logs_retention_in_days
   websocket_api_execution_arn       = module.websocket.api_execution_arn
