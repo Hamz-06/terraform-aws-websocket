@@ -59,7 +59,7 @@ locals {
 // ** dynamo **
 module "dynamodb" {
   source = "./modules/dynamo"
-  name   = "${var.application_name}-dynamodb-table"
+  name   = "${var.stage_name}-${var.application_name}-dynamodb-table"
 
   tags = var.tags
 }
@@ -68,7 +68,7 @@ module "dynamodb" {
 module "producer_lambda" {
   source = "./modules/http-lambda-function"
 
-  function_name                     = "${var.application_name}-producer-lambda"
+  function_name                     = "${var.stage_name}-${var.application_name}-producer-lambda"
   handler                           = local.handler.producer
   runtime                           = var.lambda_runtime
   cloudwatch_logs_retention_in_days = var.cloudwatch_logs_retention_in_days
@@ -85,7 +85,7 @@ module "producer_lambda" {
 module "websocket_connect_lambda" {
   source = "./modules/websocket-lambda-function"
 
-  function_name                     = "${var.application_name}-connect-lambda"
+  function_name                     = "${var.stage_name}-${var.application_name}-connect-lambda"
   handler                           = local.handler.connect
   runtime                           = var.lambda_runtime
   cloudwatch_logs_retention_in_days = var.cloudwatch_logs_retention_in_days
@@ -100,7 +100,7 @@ module "websocket_connect_lambda" {
 module "websocket_disconnect_lambda" {
   source = "./modules/websocket-lambda-function"
 
-  function_name                     = "${var.application_name}-disconnect-lambda"
+  function_name                     = "${var.stage_name}-${var.application_name}-disconnect-lambda"
   handler                           = local.handler.disconnect
   runtime                           = var.lambda_runtime
   cloudwatch_logs_retention_in_days = var.cloudwatch_logs_retention_in_days
@@ -114,7 +114,7 @@ module "websocket_disconnect_lambda" {
 
 module "websocket_default_lambda" {
   source                            = "./modules/websocket-lambda-function"
-  function_name                     = "${var.application_name}-default-lambda"
+  function_name                     = "${var.stage_name}-${var.application_name}-default-lambda"
   handler                           = local.handler.default
   runtime                           = var.lambda_runtime
   cloudwatch_logs_retention_in_days = var.cloudwatch_logs_retention_in_days
@@ -129,7 +129,7 @@ module "websocket_default_lambda" {
 // ** websocket **
 module "websocket" {
   source     = "./modules/api-gateway-websocket"
-  name       = "${var.application_name}-websocket-api-gateway"
+  name       = "${var.stage_name}-${var.application_name}-websocket-api-gateway"
   stage_name = var.stage_name
 
   connect_lambda_invoke_arn    = module.websocket_connect_lambda.lambda_invoke_arn
@@ -140,10 +140,9 @@ module "websocket" {
 }
 
 
-
 // ** http API **
 module "http_gateway" {
-  name                       = "${var.application_name}-http-api-gateway"
+  name                       = "${var.stage_name}-${var.application_name}-http-api-gateway"
   source                     = "./modules/api-gateway-http"
   lambda_function_invoke_arn = module.producer_lambda.lambda_invoke_arn
 

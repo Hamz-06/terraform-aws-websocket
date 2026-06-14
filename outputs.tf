@@ -57,3 +57,23 @@ output "dynamodb_table_name" {
   description = "Name of the DynamoDB table used for connection management."
   value       = module.dynamodb.dynamodb_table_name
 }
+
+output "producer_http_api_id" {
+  description = "ID of the HTTP API for the producer Lambda function."
+  value       = module.http_gateway.api_id
+}
+
+output "producer_http_api_stage_name" {
+  description = "Stage name of the HTTP API for the producer Lambda function."
+  value       = module.http_gateway.stage_name
+}
+
+output "websocket_api_id" {
+  description = "ID of the WebSocket API."
+  value       = module.websocket.api_id
+}
+
+output "websocket_stage_name" {
+  description = "Stage name of the WebSocket API."
+  value       = module.websocket.stage_name
+}
