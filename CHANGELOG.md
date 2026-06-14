@@ -1,3 +1,15 @@
+# [4.0.0](https://github.com/Hamz-06/terraform-aws-websocket/compare/v3.0.0...v4.0.0) (2026-06-14)
+
+
+### Features
+
+* **repo:** include environment in application name ([2ae5b79](https://github.com/Hamz-06/terraform-aws-websocket/commit/2ae5b79144034b6869a42842103edc1de7458058))
+
+
+### BREAKING CHANGES
+
+* **repo:** infrastructure resource names will now change
+
 # [3.0.0](https://github.com/Hamz-06/terraform-aws-websocket/compare/v2.3.0...v3.0.0) (2026-06-13)
 
 
