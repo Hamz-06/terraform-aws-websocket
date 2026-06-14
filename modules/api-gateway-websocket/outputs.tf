@@ -23,3 +23,8 @@ output "domain_name" {
   description = "Name of the API Gateway WebSocket API."
   value       = split("/", replace(replace(module.api_gateway_websocket.api_endpoint, "wss://", ""), "https://", ""))[0]
 }
+
+output "stage_name" {
+  description = "Stage name of the HTTP API."
+  value       = module.api_gateway_websocket.stage_id
+}
