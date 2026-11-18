@@ -73,3 +73,14 @@ variable "additional_policy_statements" {
     error_message = "additional_policy_statements keys 'manage_connections' and 'dynamodb' are reserved by the module."
   }
 }
+variable "timeout" {
+  description = "Lambda timeout in seconds."
+  type        = number
+  default     = 10
+}
+
+variable "memory_size" {
+  description = "Lambda memory in MB. More memory also means more CPU, which shortens cold starts."
+  type        = number
+  default     = 256
+}

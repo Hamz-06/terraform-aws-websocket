@@ -71,6 +71,8 @@ module "producer_lambda" {
   function_name                     = "${var.stage_name}-${var.application_name}-producer-lambda"
   handler                           = local.handler.producer
   runtime                           = var.lambda_runtime
+  timeout                           = var.lambda_timeout
+  memory_size                       = var.lambda_memory_size
   cloudwatch_logs_retention_in_days = var.cloudwatch_logs_retention_in_days
   http_api_execution_arn            = module.http_gateway.api_execution_arn
   websocket_api_execution_arn       = module.websocket.api_execution_arn
@@ -88,6 +90,8 @@ module "websocket_connect_lambda" {
   function_name                     = "${var.stage_name}-${var.application_name}-connect-lambda"
   handler                           = local.handler.connect
   runtime                           = var.lambda_runtime
+  timeout                           = var.lambda_timeout
+  memory_size                       = var.lambda_memory_size
   cloudwatch_logs_retention_in_days = var.cloudwatch_logs_retention_in_days
   websocket_api_execution_arn       = module.websocket.api_execution_arn
   dynamodb_crud_permissions         = local.dynamodb_crud_permissions
@@ -103,6 +107,8 @@ module "websocket_disconnect_lambda" {
   function_name                     = "${var.stage_name}-${var.application_name}-disconnect-lambda"
   handler                           = local.handler.disconnect
   runtime                           = var.lambda_runtime
+  timeout                           = var.lambda_timeout
+  memory_size                       = var.lambda_memory_size
   cloudwatch_logs_retention_in_days = var.cloudwatch_logs_retention_in_days
   websocket_api_execution_arn       = module.websocket.api_execution_arn
   dynamodb_crud_permissions         = local.dynamodb_crud_permissions
@@ -117,6 +123,8 @@ module "websocket_default_lambda" {
   function_name                     = "${var.stage_name}-${var.application_name}-default-lambda"
   handler                           = local.handler.default
   runtime                           = var.lambda_runtime
+  timeout                           = var.lambda_timeout
+  memory_size                       = var.lambda_memory_size
   cloudwatch_logs_retention_in_days = var.cloudwatch_logs_retention_in_days
   websocket_api_execution_arn       = module.websocket.api_execution_arn
   dynamodb_crud_permissions         = local.dynamodb_crud_permissions
