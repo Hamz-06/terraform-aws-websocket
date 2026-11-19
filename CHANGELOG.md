@@ -1,3 +1,10 @@
+# [4.1.0](https://github.com/Hamz-06/terraform-aws-websocket/compare/v4.0.0...v4.1.0) (2026-11-19)
+
+
+### Features
+
+* **lambda:** configurable timeout and memory, default 10s and 256MB ([afdac10](https://github.com/Hamz-06/terraform-aws-websocket/commit/afdac100522d17d8d4312e72a04a331e4007c393))
+
 # [4.0.0](https://github.com/Hamz-06/terraform-aws-websocket/compare/v3.0.0...v4.0.0) (2026-06-14)
 
 
