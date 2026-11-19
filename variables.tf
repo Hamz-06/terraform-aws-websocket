@@ -67,3 +67,15 @@ variable "lambda_environment_variables" {
   type        = map(string)
   default     = {}
 }
+
+variable "lambda_timeout" {
+  description = "Timeout in seconds for every Lambda. The connect Lambda reads SSM and DynamoDB on a cold start, so the 3s AWS default is too short."
+  type        = number
+  default     = 10
+}
+
+variable "lambda_memory_size" {
+  description = "Memory in MB for every Lambda. More memory also means more CPU, which shortens cold starts."
+  type        = number
+  default     = 256
+}

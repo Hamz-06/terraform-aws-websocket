@@ -17,6 +17,8 @@ module "lambda_function" {
   package_type  = "Zip"
   runtime       = var.runtime
   handler       = var.handler
+  timeout       = var.timeout
+  memory_size   = var.memory_size
 
   create_package         = false
   local_existing_package = data.archive_file.bootstrap.output_path

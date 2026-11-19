@@ -101,6 +101,7 @@ Remote runs require only artifact metadata:
 ## Security and Quality Baseline
 
 - CloudWatch log retention is configurable via `cloudwatch_logs_retention_in_days`
+- Lambda timeout and memory are configurable via `lambda_timeout` (default 10s) and `lambda_memory_size` (default 256MB) for all four functions
 - Tags are propagated to all module-managed resources via `tags`
 - Resource names are deterministic from `application_name` and function role
 - IAM policy assumptions are least-privilege oriented for API invoke/manage-connections and DynamoDB CRUD
